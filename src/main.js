@@ -3,5 +3,5 @@ import './assets/main.css'
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router' 
-
+console.log('Vue app is running');
 createApp(App).use(router).mount('#app')
