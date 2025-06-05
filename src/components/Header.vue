@@ -4,13 +4,14 @@
 
     <nav v-if="user && user.role === 'admin'" class="nav-wrapper">
       <ul class="navul">
-        <li @click="navigateTo('/AllNotes')">Заметки пользователей</li>
+        <li >Заметки пользователей</li>
         <li @click="navigateTo('/Users')">Пользователи</li>
       </ul>
     </nav>
 
     <div class="user-actions">
       <div v-if="user" class="user-info">
+        <h2 class="name">{{ user.fio }} {{ user.firstName }}</h2>
         <h4 class="name">{{ user.fio }} {{ user.lastName }}</h4>
         <span class="mail">{{ user.password }}</span>
       </div>

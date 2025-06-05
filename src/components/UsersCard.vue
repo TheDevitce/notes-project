@@ -5,18 +5,14 @@
         <span>{{ avatarText }}</span>
       </div>
       <div class="user-details">
-        <h4 class="name">{{ user.fio }}</h4>
+        <h4 class="name">{{ fullName }}</h4>
         <p class="note-count">{{ user.noteCount }} заметок</p>
       </div>
     </div>
 
     <div class="statuses">
-      <div class="status-dropdown">
-        <select v-model="user.active" @change="$emit('update:user', user)"
-          :class="{ 'status-active': user.active, 'status-inactive': !user.active }">
-          <option :value="true">Активирован</option>
-          <option :value="false">Деактивирован</option>
-        </select>
+      <div class="status-label" :class="{ active: user.active, inactive: !user.active }">
+        {{ user.active ? 'Активирован' : 'Деактивирован' }}
       </div>
 
       <div class="role-dropdown">
@@ -36,20 +32,37 @@
         <img src="/src/assets/ButtonDelete.png" alt="Удалить" />
       </button>
     </div>
-    <DeleteConfirmModal v-if="showDeleteModal" :showModal="showDeleteModal" itemType="пользователя" :itemName="user.fio"
-      @close="showDeleteModal = false" @confirm="$emit('delete', user.id)" />
+
+    <DeleteConfirmModal
+  v-if="showDeleteModal"
+  :showModal="showDeleteModal"
+  itemType="пользователя"
+  :itemName="fullName"
+  @close="showDeleteModal = false"
+  @confirm="
+    $emit('update:user', { ...user, active: false });
+    showDeleteModal = false;
+  "
+/>
   </div>
 </template>
 
-
 <script setup>
 import { computed, ref } from 'vue'
-import DeleteConfirmModal from '@/components/DeleteConfirmModal.vue'
+import DeleteConfirmModal from '../components/DeleteConfirmModal.vue'
 
 const props = defineProps({
   user: {
     type: Object,
-    required: true
+    required: true,
+    default: () => ({
+      id: 0,
+      firstName: '',
+      lastName: '',
+      noteCount: 0,
+      active: true,
+      role: 'user'
+    })
   },
   isLast: {
     type: Boolean,
@@ -60,11 +73,15 @@ const props = defineProps({
 const emit = defineEmits(['delete', 'update:user', 'update'])
 
 const avatarText = computed(() => {
-  return props.user.fio?.charAt(0).toUpperCase() || '?'
+  return props.user.firstName?.charAt(0).toUpperCase() || '?'
 })
+
+const fullName = computed(() => {
+  return `${props.user.firstName} ${props.user.lastName}`
+})
+
 const showDeleteModal = ref(false)
 </script>
-
 <style scoped>
 .user-card {
   display: flex;

@@ -32,8 +32,8 @@
 
 <script setup>
 import { ref } from 'vue'
-import axios from 'axios'
 import { useRouter } from 'vue-router'
+import api from '@/api' 
 
 const router = useRouter()
 
@@ -46,53 +46,44 @@ const error = ref('')
 const loading = ref(false)
 
 const handleLogin = async () => {
-  loading.value = true
-  error.value = ''
+  loading.value = true;
+  error.value = '';
 
   try {
-    const response = await axios.get('https://dummyjson.com/c/9267-1423-433b-9135')
-    const users = response.data.response.users
+    const credentials = {
+      username: form.value.username,
+      password: form.value.password
+    };
 
-    const foundUser = users.find(
-      user =>
-        user.username === form.value.username &&
-        user.password === form.value.password
-    )
+    const response = await api.post('/auth/login', credentials);
 
-    if (!foundUser) {
-      error.value = 'Неверный логин или пароль'
-      return
-    }
+    const userResponse = await api.get(`/users/${response.data.id}`);
 
-    if (!foundUser.active) {
-      error.value = 'Ваш аккаунт деактивирован'
-      return
-    }
+    const determineRole = (user) => {
+  if (user.role) return user.role;
+  return ['admin', 'administrator'].includes(user.username.toLowerCase()) ? 'admin' : 'user';
+};
     const userData = {
-      id: foundUser.id,
-      username: foundUser.username,
-      fio: foundUser.fio,
-      password: foundUser.password,
-      role: foundUser.role,
-      active: true
-    }
-    if (foundUser.role === 'admin') {
-      localStorage.setItem('auth', JSON.stringify(userData))
-      router.push('/AllNotes')
-    }
-    else {
-      localStorage.setItem('auth', JSON.stringify(userData))
-      router.push('/Notes')
-    }
+      id: userResponse.data.id,
+      username: userResponse.data.username,
+      email: userResponse.data.email,
+      firstName: userResponse.data.firstName,
+      lastName: userResponse.data.lastName,
+      token: response.data.accessToken || 'no-token',
+      role: determineRole(userResponse.data)
+    };
 
+    localStorage.setItem('auth', JSON.stringify(userData));
+
+    router.push(userData.role === 'admin' ? '/Users' : '/Notes');
 
   } catch (err) {
-    error.value = 'Ошибка подключения к серверу'
-    console.error(err)
+    error.value = err.response?.data?.message || err.message || 'Ошибка входа';
+    console.error('Login error:', err);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 </script>
 
 <style scoped>

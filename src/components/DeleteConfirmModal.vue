@@ -17,31 +17,33 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    showModal: {
-      type: Boolean,
-      required: true
-    },
-    itemType: {
-      type: String,
-      required: true,
-      validator: value => ['заметку', 'пользователя'].includes(value)
-    },
-    itemName: {
-      type: String,
-      required: true
-    }
+<script setup>
+import { defineProps, defineEmits } from 'vue'
+
+const props = defineProps({
+  showModal: {
+    type: Boolean,
+    required: true
   },
-  methods: {
-    closeModal() {
-      this.$emit('close')
-    },
-    confirmDelete() {
-      this.$emit('confirm')
-    }
+  itemType: {
+    type: String,
+    required: true,
+    validator: value => ['заметку', 'пользователя'].includes(value)
+  },
+  itemName: {
+    type: String,
+    required: true
   }
+})
+
+const emit = defineEmits(['close', 'confirm'])
+
+const closeModal = () => {
+  emit('close')
+}
+
+const confirmDelete = () => {
+  emit('confirm')
 }
 </script>
 

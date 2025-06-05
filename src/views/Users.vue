@@ -24,110 +24,86 @@
     </div>
 
     <div v-else class="user-table">
-      <UsersCard v-for="(user, index) in filteredUsers" :key="user.id" :user="user"
-        :is-last="index === filteredUsers.length - 1" @delete="deleteUser" @update="updateUser" />
+      <UsersCard
+  v-for="(user, index) in filteredUsers"
+  :key="user.id"
+  :user="user"
+  :is-last="index === filteredUsers.length - 1"
+  @update:user="updateUser"
+/>
     </div>
   </div>
 </template>
 
-
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import axios from 'axios'
+import { ref, onMounted } from 'vue'
 import UsersCard from '../components/UsersCard.vue'
 import AddUser from '../components/AddUser.vue'
+import { getAuthToken } from '@/auth'
+import api from '../api' 
+
 
 const users = ref([])
-const notes = ref([])
+const filteredUsers = ref([])
 const loading = ref(true)
+const error = ref(null)
 const isModalOpen = ref(false)
 
-const loadUsers = async () => {
+
+const fetchUsers = async () => {
   try {
-    const response = await axios.get('https://dummyjson.com/c/9267-1423-433b-9135')
-    if (response.data?.response?.users) {
-      users.value = response.data.response.users.map(user => ({
-        ...user,
-        noteCount: 0
-      }))
-    } else {
-      users.value = []
-    }
+    const response = await api.get('/users')
+    
+    users.value = response.data.users.map(user => ({
+      ...user,
+      active: user.active ?? true,
+      noteCount: Math.floor(Math.random() * 20)
+    }))
+
+    filteredUsers.value = users.value.filter(u => u.role !== 'moderator')
+
   } catch (err) {
-    console.error('Ошибка при загрузке пользователей:', err)
-    users.value = []
-  }
-}
-
-const loadNotes = async () => {
-  try {
-    const response = await axios.get('https://dummyjson.com/c/2396-1f92-4cbf-9cd3')
-    if (response.data?.response?.userNotes) {
-      notes.value = response.data.response.userNotes
-    } else {
-      notes.value = []
-    }
-  } catch (err) {
-    console.error('Ошибка при загрузке заметок:', err)
-    notes.value = []
-  }
-}
-
-const mergeUserDataWithNotes = () => {
-  const noteCountMap = {}
-
-  notes.value.forEach(note => {
-    noteCountMap[note.userId] = (noteCountMap[note.userId] || 0) + 1
-  })
-
-  users.value = users.value.map(user => ({
-    ...user,
-    noteCount: noteCountMap[user.id] || 0
-  }))
-}
-
-const loadData = async () => {
-  loading.value = true
-  try {
-    await Promise.all([loadUsers(), loadNotes()])
-    mergeUserDataWithNotes()
+    error.value = err.message
   } finally {
     loading.value = false
   }
 }
-
-const filteredUsers = computed(() => {
-  return users.value
-})
-
-const deleteUser = (id) => {
-  users.value = users.value.filter(user => user.id !== id)
-}
-
-const updateUser = (updatedUser) => {
-  const index = users.value.findIndex(user => user.id === updatedUser.id)
-  if (index !== -1) {
-    users.value[index] = updatedUser
-    alert('Изменения успешно сохранены.')
-  }
-}
+onMounted(fetchUsers)
 
 const openAddUserModal = () => {
   isModalOpen.value = true
 }
-
 const closeModal = () => {
   isModalOpen.value = false
 }
 
 const handleAddUser = (newUser) => {
-  users.value.push(newUser)
+  const token = getAuthToken()
+  console.log('Новый пользователь:', newUser)
+  console.log('Токен:', token || 'Не найден')
+  filteredUsers.value.push(newUser)
   closeModal()
 }
 
-onMounted(async () => {
-  await loadData()
-})
+const deleteUser = (userId) => {
+  const index = filteredUsers.value.findIndex(u => u.id === userId)
+  if (index !== -1) {
+    const token = getAuthToken()
+    console.log('Удаляем пользователя:', filteredUsers.value[index])
+    console.log('Токен:', token || 'Не найден')
+    filteredUsers.value.splice(index, 1)
+  }
+}
+
+const updateUser = (updatedUser) => {
+  const index = filteredUsers.value.findIndex(u => u.id === updatedUser.id)
+  if (index !== -1) {
+    const token = getAuthToken()
+    console.log('Обновляем пользователя:', updatedUser)
+    console.log('Токен:', token || 'Не найден')
+    filteredUsers.value[index] = updatedUser
+  }
+}
 </script>
 
 <style scoped>

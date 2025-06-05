@@ -30,15 +30,10 @@
   </div>
 </template>
 
+
 <script setup>
 import { ref } from 'vue'
-import { defineProps, defineEmits } from 'vue'
-
-const show = ref(false)
-const fullName = ref('')
-const login = ref('')
-const password = ref('')
-const repeatPassword = ref('')
+import { getAuthToken } from '@/auth'
 
 const props = defineProps({
   visible: {
@@ -49,6 +44,10 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'add'])
 
+const fullName = ref('')
+const login = ref('')
+const password = ref('')
+const repeatPassword = ref('')
 
 const handleSubmit = () => {
   if (password.value !== repeatPassword.value) {
@@ -58,21 +57,18 @@ const handleSubmit = () => {
 
   const newUser = {
     id: Date.now(),
-    username: login.value,
+    firstName: fullName.value.split(' ')[0],
+    lastName: fullName.value.split(' ').slice(1).join(' ') || '',
     fio: fullName.value,
+    username: login.value,
     password: password.value,
     role: 'user',
     active: true,
-    noteCount: 0
+    noteCount: Math.floor(Math.random() * 20)
   }
 
   emit('add', newUser)
-  fullName.value = ''
-  login.value = ''
-  password.value = ''
-  repeatPassword.value = ''
-
-  emit('close')
+  closeModal()
 }
 
 const closeModal = () => {
@@ -80,7 +76,6 @@ const closeModal = () => {
   login.value = ''
   password.value = ''
   repeatPassword.value = ''
-
   emit('close')
 }
 </script>

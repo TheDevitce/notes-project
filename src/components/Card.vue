@@ -1,51 +1,46 @@
 <template>
   <div class="note-card">
-    <h3 class="note-title">{{ note.name }}</h3>
-
+    <h3 class="note-title">{{ post.title }}</h3>
     <div class="note-content-wrapper">
       <p v-if="!isEditing" class="note-content" @click="startEditing">
-        {{ note.description }}
+        {{ post.body }}
       </p>
-
-      <textarea v-else v-model="editedDescription" class="edit-textarea" placeholder="Введите описание..."
-        @blur="saveEdit" @keyup.enter="saveEdit" autofocus></textarea>
+      <textarea v-else v-model="editedBody" class="edit-textarea" placeholder="Введите текст..."
+                @blur="saveEdit" @keyup.enter="saveEdit" autofocus></textarea>
     </div>
-
     <div class="actions">
       <button @click="showDeleteModal = true" class="action-btn-del">Удалить</button>
       <button @click="startEditing" class="action-btn">Изменить</button>
     </div>
-
-    <DeleteConfirmModal v-if="showDeleteModal" :showModal="showDeleteModal" itemType="заметку" :itemName="note.name"
-      @close="showDeleteModal = false" @confirm="$emit('delete', note.id)" />
+   <DeleteConfirmModal
+  :showModal="showDeleteModal"
+  itemType="заметку"
+  :itemName="post.title"
+  @close="showDeleteModal = false"
+  @confirm="$emit('delete', post.id)"
+/>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import DeleteConfirmModal from '@/components/DeleteConfirmModal.vue'
+import DeleteConfirmModal from './DeleteConfirmModal.vue'
 
-const props = defineProps({
-  note: {
-    type: Object,
-    required: true
-  }
-})
-
+const props = defineProps({ post: Object })
 const emit = defineEmits(['delete', 'update'])
 
 const isEditing = ref(false)
-const editedDescription = ref(props.note.description)
+const editedBody = ref(props.post.body)
 const showDeleteModal = ref(false)
 
 const startEditing = () => {
   isEditing.value = true
+  editedBody.value = props.post.body
 }
 
 const saveEdit = () => {
-  const updatedNote = { ...props.note, description: editedDescription.value }
-  emit('update', updatedNote)
   isEditing.value = false
+  emit('update', { ...props.post, body: editedBody.value })
 }
 </script>
 
@@ -63,13 +58,11 @@ const saveEdit = () => {
   flex-direction: column;
   justify-content: center;
 }
-
 .note-title {
   font-size: 1.2rem;
   color: #ffffff;
   margin: 0 0 0.5rem 0;
 }
-
 .note-content {
   font-size: 0.9rem;
   color: #cccccc;
@@ -81,13 +74,11 @@ const saveEdit = () => {
   -webkit-box-orient: vertical;
   cursor: pointer;
 }
-
 .actions {
   display: flex;
   align-items: center;
   margin-top: auto;
 }
-
 .action-btn {
   padding: 0.4rem 0.8rem;
   font-size: 0.85rem;
@@ -97,7 +88,6 @@ const saveEdit = () => {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
 .edit-textarea {
   width: 100%;
   height: 100px;
@@ -111,7 +101,6 @@ const saveEdit = () => {
   color: #fff;
   box-sizing: border-box;
 }
-
 .action-btn-del {
   padding: 0.4rem 0.8rem;
   font-size: 0.85rem;
@@ -122,12 +111,10 @@ const saveEdit = () => {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
 .action-btn-del:hover {
   background-color: #444;
   color: rgb(255, 45, 45);
 }
-
 .action-btn:hover {
   background-color: #444;
 }

@@ -2,21 +2,17 @@
   <div class="modal-overlay">
     <div class="modal">
       <div class="header">
-        <img class="image" src="/src/assets/Featured icon.png" alt="Logo" />
         <h3>Новая заметка</h3>
       </div>
-
       <div class="form-container">
         <form @submit.prevent="handleSubmit">
           <label for="title">Заголовок</label>
-          <input type="text" id="title" v-model="title" placeholder="Введите заголовок" required />
-
+          <input id="title" v-model="title" placeholder="Введите заголовок" required />
           <label for="content">Текст</label>
-          <input id="content" v-model="content" placeholder="Введите текст заметки" rows="5" required></input>
-
+          <textarea id="content" v-model="content" placeholder="Введите текст заметки" rows="5" required></textarea>
           <div class="buttons">
             <button type="button" @click="closeModal">Отмена</button>
-            <button type="submit" class="primary" @click="handleSubmit">Добавить</button>
+            <button type="submit" class="primary">Добавить</button>
           </div>
         </form>
       </div>
@@ -25,50 +21,27 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
+import { getAuthToken } from '@/auth' 
 
-const emit = defineEmits(['close', 'add']);
+const emit = defineEmits(['close', 'add'])
+const title = ref('')
+const content = ref('')
 
-const title = ref('');
-const content = ref('');
-
-const closeModal = () => {
-  emit('close');
-};
+const closeModal = () => emit('close')
 
 const handleSubmit = () => {
-  if (title.value.trim() && content.value.trim()) {
-    const authData = localStorage.getItem('auth');
-    const user = authData ? JSON.parse(authData) : null;
-    const userId = user?.id || 'unknown';
+  if (!title.value.trim() || !content.value.trim()) return
 
-    const existingNotes = JSON.parse(localStorage.getItem('localNotes') || '[]');
+  const newPost = { title: title.value, body: content.value }
+  const token = getAuthToken() 
 
-    let maxId = 0;
-    existingNotes.forEach(note => {
-      const numericId = parseInt(note.id);
-      if (!isNaN(numericId) && numericId > maxId) {
-        maxId = numericId;
-      }
-    });
+  console.log('Отправка данных:', newPost)
+  console.log('Токен:', token || 'Токен не найден')
 
-    const newNote = {
-      id: String(maxId + 1),
-      userId: String(userId),
-      name: title.value.trim(),
-      description: content.value.trim()
-    };
-
-    const updatedNotes = [...existingNotes, newNote];
-    localStorage.setItem('localNotes', JSON.stringify(updatedNotes));
-
-    emit('add', newNote);
-    closeModal();
-
-    title.value = '';
-    content.value = '';
-  }
-};
+  emit('add', newPost)
+  closeModal()
+}
 </script>
 
 <style scoped>
@@ -84,47 +57,35 @@ const handleSubmit = () => {
   align-items: center;
   z-index: 999;
 }
-
 .modal {
   background-color: #2a2a2a;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  width: 350px;
+  width: 450px;
   color: white;
 }
-
 .header {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 2rem;
 }
-
-.image {
-  width: 50px;
-  height: 50px;
-  margin-bottom: 0.5rem;
-}
-
 h3 {
   margin: 0;
   font-size: 1.5rem;
   text-align: center;
 }
-
 .form-container {
   width: 100%;
 }
-
 label {
   display: block;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
   text-align: left;
 }
-
-input {
+input, textarea {
   width: 100%;
   padding: 0.8rem;
   margin-bottom: 1.5rem;
@@ -132,15 +93,19 @@ input {
   border-radius: 4px;
   font-size: 0.95rem;
   box-sizing: border-box;
+  background-color: #1e1e1e;
+  color: white;
 }
-
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
 .buttons {
   display: flex;
   gap: 10px;
   justify-content: center;
   width: 100%;
 }
-
 button {
   padding: 0.8rem 1.5rem;
   width: 200px;
@@ -150,18 +115,15 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
 button[type="button"] {
   background-color: #181819;
   color: white;
 }
-
-button.primary {
+.button-primary {
   background-color: #007bff;
   color: white;
 }
-
-button.primary:hover {
+.button-primary:hover {
   background-color: #0056b3;
 }
 </style>

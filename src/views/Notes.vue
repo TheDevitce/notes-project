@@ -1,138 +1,166 @@
 <template>
-    <div class="notes-container">
-        <div class="notes-header">
-            <h3 class="notes-title">Ваши заметки</h3>
-            <button class="add-note-btn" @click="openAddNoteModal">Новая заметка +</button>
-        </div>
-
-        <AddNoteModal v-if="isModalOpen" @close="closeModal" @add="handleAddNote" />
-
-        <div v-if="loading" class="status-message">Загрузка заметок...</div>
-        <div v-else-if="filteredNotes.length === 0" class="status-message">У вас пока нет заметок.</div>
-
-        <div v-else class="note-cards">
-            <Card v-for="note in filteredNotes" :key="note.id" :note="{ ...note }" @delete="deleteNote"
-                @update="updateNote" />
-        </div>
+  <div class="notes-container">
+    <div class="notes-header">
+      <h3 class="notes-title">Ваши заметки</h3>
+      <button class="add-note-btn" @click="openAddNoteModal">Новая заметка +</button>
     </div>
+
+    <AddNoteModal v-if="isModalOpen" @close="closeModal" @add="handleAddPost" />
+
+    <div v-if="loading" class="status-message">Загрузка заметок...</div>
+    <div v-else-if="filteredPosts.length === 0" class="status-message">У вас пока нет заметок.</div>
+    <div v-else class="note-cards">
+     <Card
+        v-for="post in filteredPosts"
+        :key="post.id"
+        :post="post"
+        @delete="deletePost"
+        @update="updatePost"
+      />
+    </div>
+  </div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import axios from 'axios'
+import api from '@/api'
+import { getAuthToken } from '@/auth'
 import Card from '../components/Card.vue'
 import AddNoteModal from '../components/AddNoteModal.vue'
 
-const notes = ref([])
+const posts = ref([])
 const loading = ref(true)
 const userId = ref(null)
 const isModalOpen = ref(false)
 
 onMounted(async () => {
-    const authData = localStorage.getItem('auth')
-    if (authData) {
-        try {
-            const user = JSON.parse(authData)
-            if (user && typeof user === 'object') {
-                userId.value = user.id
-            }
-        } catch (e) {
-            console.error('Ошибка парсинга:', e)
-        }
-    }
-
-    await loadNotes()
-})
-
-const loadNotes = async () => {
+  const authData = localStorage.getItem('auth')
+  if (authData) {
     try {
-        const response = await axios.get('https://dummyjson.com/c/a2f5-9d7d-421f-ac7f')
-        notes.value = response.data.response?.userNotes || []
-    } catch (err) {
-        console.error('Ошибка загрузки заметок:', err)
-        notes.value = JSON.parse(localStorage.getItem('localNotes') || '[]')
-    } finally {
-        loading.value = false
+      const user = JSON.parse(authData)
+      userId.value = user.id
+    } catch (e) {
+      console.error('Ошибка парсинга:', e)
     }
-}
-
-const filteredNotes = computed(() => {
-    if (!userId.value) return []
-    return notes.value.filter(note => note.userId === String(userId.value))
+  }
+  await loadPosts()
 })
 
-const deleteNote = id => {
-    notes.value = notes.value.filter(note => note.id !== id)
+const loadPosts = async () => {
+  loading.value = true
+  try {
+    const authData = localStorage.getItem('auth')
+    const user = authData ? JSON.parse(authData) : null
+    if (!user || !user.id) throw new Error('Пользователь не авторизован')
+    const response = await api.get(`/posts/user/${user.id}`)
+    posts.value = response.data.posts || []
+  } catch (err) {
+    console.error('Ошибка загрузки:', err)
+    posts.value = []
+  } finally {
+    loading.value = false
+  }
 }
 
-const updateNote = updatedNote => {
-    const index = notes.value.findIndex(n => n.id === updatedNote.id)
-    if (index !== -1) {
-        notes.value = [
-            ...notes.value.slice(0, index),
-            { ...updatedNote },
-            ...notes.value.slice(index + 1)
-        ]
-    }
+const filteredPosts = computed(() => {
+  return posts.value.filter(post => String(post.userId) === String(userId.value))
+})
+
+const deletePost = (postId) => {
+  const token = getAuthToken()
+  const postToDelete = posts.value.find(p => p.id === postId)
+
+  if (!postToDelete) {
+    console.warn('Пост не найден')
+    return
+  }
+
+  posts.value = posts.value.filter(p => p.id !== postId)
+
+  console.log('Пост удалён:', postToDelete)
+  console.log('Токен:', token || 'Не найден')
+}
+
+const updatePost = (updatedPost) => {
+  const token = getAuthToken()
+
+  const index = posts.value.findIndex(p => p.id === updatedPost.id)
+
+  if (index === -1) {
+    console.warn('Пост не найден')
+    return
+  }
+
+  posts.value[index] = { ...updatedPost }
+
+  console.log('Пост обновлён:', updatedPost)
+  console.log('Токен:', token || 'Не найден')
 }
 
 const openAddNoteModal = () => {
-    isModalOpen.value = true
+  isModalOpen.value = true
 }
-
 const closeModal = () => {
-    isModalOpen.value = false
+  isModalOpen.value = false
 }
 
-const handleAddNote = newNote => {
-    notes.value.push(newNote)
+const handleAddPost = async (newPost) => {
+  try {
+    const authData = localStorage.getItem('auth')
+    const user = authData ? JSON.parse(authData) : null
+    if (!user?.id) throw new Error('Пользователь не авторизован')
+    const response = await api.post('/posts/add', {
+      title: newPost.title,
+      body: newPost.body,
+      userId: user.id
+    })
+    posts.value.push(response.data)
+    closeModal()
+  } catch (err) {
+    console.error('Ошибка при добавлении:', err)
+    alert('Не удалось создать')
+  }
 }
 </script>
 
 <style scoped>
 .notes-container {
-    padding: 2rem;
-    color: white;
+  padding: 2rem;
+  color: white;
 }
-
 .notes-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
-
 .notes-title {
-    font-size: 1.8rem;
-    color: #ffffff;
-    margin: 0;
+  font-size: 1.8rem;
+  color: #ffffff;
+  margin: 0;
 }
-
 .add-note-btn {
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
-
 .add-note-btn:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
-
 .note-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
 }
-
 .status-message {
-    text-align: center;
-    color: #ccc;
-    font-size: 20px;
-    margin-top: 5rem;
+  text-align: center;
+  color: #ccc;
+  font-size: 20px;
+  margin-top: 5rem;
 }
 </style>
