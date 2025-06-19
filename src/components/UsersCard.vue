@@ -26,10 +26,12 @@
 
     <div class="actions">
       <button class="action-btn edit" title="Редактировать" @click="$emit('update', user)">
-        <img src="/src/assets/ButtonEdit.png" alt="Редактировать" />
+               <SvgIcon name="edit" color="#000" size="30" />
+
       </button>
       <button class="action-btn delete" title="Удалить" @click="showDeleteModal = true">
-        <img src="/src/assets/ButtonDelete.png" alt="Удалить" />
+               <SvgIcon name="delete" color="#000" size="30" />
+
       </button>
     </div>
 
@@ -50,6 +52,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import DeleteConfirmModal from '../components/DeleteConfirmModal.vue'
+import SvgIcon from '@/components/SvgIcon.vue'
 
 const props = defineProps({
   user: {

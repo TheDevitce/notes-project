@@ -1,7 +1,6 @@
-import './assets/main.css'
+import './assets/scss/main.scss'
 
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router' 
-console.log('Vue app is running');
 createApp(App).use(router).mount('#app')

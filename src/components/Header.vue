@@ -17,7 +17,7 @@
       </div>
 
       <button v-if="user" class="logout-btn" title="Выйти" @click="handleLogout">
-        <img :src="iconLogout" alt="Выход" class="logout-icon" />
+               <SvgIcon name="logout" color="#000" size="30" />
       </button>
     </div>
   </div>
@@ -28,7 +28,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import iconLogout from '@/assets/Icon.png'
+import SvgIcon from '@/components/SvgIcon.vue'
+
 
 const router = useRouter()
 const user = ref(null)

@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import path from 'path'
 
 export default defineConfig({
   base: '/notes-project/',
@@ -9,30 +10,16 @@ export default defineConfig({
     assetsDir: 'assets',
     emptyOutDir: true
   },
-  resolve: {
-    alias: {
-      '@': '/src'
+   css: {
+    preprocessorOptions: {
+      scss: {}
     }
-  }
+  },
+   resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '@components': path.resolve(__dirname, './src/components'),
+      '@assets': path.resolve(__dirname, './src/assets')
+    }
+  },
 })
-
-
-
-// import { fileURLToPath, URL } from 'node:url'
-// import { defineConfig } from 'vite'
-// import vue from '@vitejs/plugin-vue'
-
-// export default defineConfig({
-//   base: '/notes-project/', 
-//   plugins: [vue()],
-//   build: {
-//     outDir: 'dist',
-//     assetsDir: 'assets',
-//     emptyOutDir: true
-//   },
-//   resolve: {
-//     alias: {
-//       '@': fileURLToPath(new URL('./src', import.meta.url))
-//     }
-//   }
-// })
