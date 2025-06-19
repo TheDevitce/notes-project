@@ -4,16 +4,18 @@
     <input
       :id="id"
       :type="type"
-      :value="modelValue"
+      v-model="model"
       :placeholder="placeholder"
       :required="required"
-      @input="$emit('update:modelValue', $event.target.value)"
       class="input__field"
+      v-bind="$attrs"
     />
   </div>
 </template>
 
 <script setup>
+const model = defineModel()
+
 defineProps({
   id: {
     type: String,
@@ -27,10 +29,6 @@ defineProps({
     type: String,
     default: 'text',
   },
-  modelValue: {
-    type: String,
-    default: '',
-  },
   placeholder: {
     type: String,
     default: '',
@@ -40,8 +38,6 @@ defineProps({
     default: false,
   },
 });
-
-defineEmits(['update:modelValue']);
 </script>
 
 <style scoped src="./input.scss"></style>

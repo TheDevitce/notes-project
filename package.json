@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "echo. > dist/.nojekyll && gh-pages -d dist",
-      "lint": "eslint . --ext .js,.vue",
+    "lint": "eslint . --ext .js,.vue",
     "format": "prettier --write ."
   },
   "dependencies": {

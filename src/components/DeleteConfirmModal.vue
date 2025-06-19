@@ -4,7 +4,6 @@
       <div class="modal-header">
                        <SvgIcon name="logo" color="#000" size="30" />
       </div>
-
       <div class="modal-content">
         <p>Вы уверены, что хотите удалить {{ itemType }} "<strong>{{ itemName }}</strong>"?</p>
       </div>

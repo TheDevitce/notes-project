@@ -1,16 +1,27 @@
 <template>
-  <button :class="['button', { 'button_disabled': disabled }]" :disabled="disabled">
+  <button
+    :class="buttonClass"
+    :disabled="disabled"
+    v-bind="$attrs"
+  >
     <slot></slot>
   </button>
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
   disabled: {
     type: Boolean,
     default: false,
   },
-});
+})
+
+const buttonClass = computed(() => ({
+  button: true,
+  'button_disabled': props.disabled
+}))
 </script>
 
 <style scoped src="./button.scss"></style>
