@@ -10,15 +10,17 @@ export default defineConfig({
     assetsDir: 'assets',
     emptyOutDir: true
   },
-   css: {
+  css: {
     preprocessorOptions: {
       scss: {}
     }
   },
-   resolve: {
+  resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@components': path.resolve(__dirname, './src/components'),
+      '@blocks': path.resolve(__dirname, './src/blocks'),
+      '@layouts': path.resolve(__dirname, './src/layouts'),
       '@assets': path.resolve(__dirname, './src/assets')
     }
   },

@@ -22,7 +22,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { getAuthToken } from '@/auth' 
+import { getAuthToken } from '@/auth'
 
 const emit = defineEmits(['close', 'add'])
 const title = ref('')
@@ -34,7 +34,7 @@ const handleSubmit = () => {
   if (!title.value.trim() || !content.value.trim()) return
 
   const newPost = { title: title.value, body: content.value }
-  const token = getAuthToken() 
+  const token = getAuthToken()
 
   console.log('Отправка данных:', newPost)
   console.log('Токен:', token || 'Токен не найден')
@@ -57,6 +57,7 @@ const handleSubmit = () => {
   align-items: center;
   z-index: 999;
 }
+
 .modal {
   background-color: #2a2a2a;
   padding: 2rem;
@@ -65,27 +66,33 @@ const handleSubmit = () => {
   width: 450px;
   color: white;
 }
+
 .header {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 2rem;
 }
+
 h3 {
   margin: 0;
   font-size: 1.5rem;
   text-align: center;
 }
+
 .form-container {
   width: 100%;
 }
+
 label {
   display: block;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
   text-align: left;
 }
-input, textarea {
+
+input,
+textarea {
   width: 100%;
   padding: 0.8rem;
   margin-bottom: 1.5rem;
@@ -96,16 +103,19 @@ input, textarea {
   background-color: #1e1e1e;
   color: white;
 }
+
 textarea {
   min-height: 120px;
   resize: vertical;
 }
+
 .buttons {
   display: flex;
   gap: 10px;
   justify-content: center;
   width: 100%;
 }
+
 button {
   padding: 0.8rem 1.5rem;
   width: 200px;
@@ -115,14 +125,17 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
+
 button[type="button"] {
   background-color: #181819;
   color: white;
 }
+
 .button-primary {
   background-color: #007bff;
   color: white;
 }
+
 .button-primary:hover {
   background-color: #0056b3;
 }

@@ -4,18 +4,19 @@
       <div class="auth-form__logo">
         <SvgLogo name="logo" color="#000" size="30" />
       </div>
-      <!-- на элемент -->
-      <h2 class="auth-form__title">Добро пожаловать</h2>
-      <p class="auth-form__subtitle">Введите ваш логин и пароль</p>
 
+      <AuthTitle title="Добро пожаловать" subtitle="Введите ваш логин и пароль" />
       <form @submit.prevent="handleLogin">
-        <InputComponent id="username" label="Логин"  v-model="form.username" placeholder="yourLogin"  required class="auth-form__input" />
-        <InputComponent id="password" label="Пароль"  type="password" v-model="form.password" placeholder="********" required class="auth-form__input" />
+        <InputComponent id="username" label="Логин" v-model="form.username" placeholder="yourLogin" required
+          class="auth-form__input" />
+        <InputComponent id="password" label="Пароль" type="password" v-model="form.password" placeholder="********"
+          required class="auth-form__input" />
 
-
-        <ButtonComponent class="auth-form__button" :disabled="loading">
-          {{ loading ? 'Загрузка...' : 'Войти' }}
-        </ButtonComponent>
+        <div class="auth-form__group auth-form__button-wrapper">
+          <ButtonComponent type="submit" btnType="primary" class="auth-form__button" :disabled="loading">
+            Войти
+          </ButtonComponent>
+        </div>
       </form>
     </div>
   </div>
@@ -25,10 +26,11 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/api'
+import AuthTitle from '@/blocks/text-elements/auth-title.vue'
 import ButtonComponent from '@/blocks/button/button.vue'
 import InputComponent from '@/blocks/input/input.vue'
 import SvgLogo from '@/components/SvgComponents/SvgLogo.vue'
-import SvgIcon from '@/components/SvgIcon.vue'
+
 
 const router = useRouter()
 

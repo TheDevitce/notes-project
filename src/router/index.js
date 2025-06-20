@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import MainPage from '../views/MainPage.vue'
+import AuthLayout from '@/layouts/AuthLayout.vue'
+import MainLayout from '@/layouts/MainLayout.vue' // Добавлен главный лейаут
 import Notes from '../views/Notes.vue'
 import AllNotes from '../views/AllNotes.vue'
 import Users from '../views/Users.vue'
@@ -8,27 +9,29 @@ import { isAuthenticated, hasRole, getAuthUser } from '../auth'
 const routes = [
   {
     path: '/',
-    name: 'Main',
-    component: MainPage
+    name: 'Авторизация',
+    component: AuthLayout,
+    meta: { requiresAuth: false }
   },
   {
-    path: '/Notes',
-    name: 'Notes',
-    component: Notes,
-    meta: { requiresAuth: true, roles: ['user'] }
-  },
-  {
-    path: '/AllNotes',
-    name: 'AllNotes',
-    component: AllNotes,
-    meta: { requiresAuth: true, roles: ['admin'] }
-  },
-  {
-    path: '/Users',
-    name: 'Users',
-    component: Users,
-    meta: { requiresAuth: true, roles: ['admin'] }
-  },
+    path: '/',
+    component: MainLayout,
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: 'Notes',
+        name: 'Notes',
+        component: Notes,
+        meta: { roles: ['user'] }
+      },
+      {
+        path: 'Users',
+        name: 'Users',
+        component: Users,
+        meta: { roles: ['admin'] }
+      },
+    ]
+  }
 ]
 
 const router = createRouter({

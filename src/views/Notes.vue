@@ -1,8 +1,7 @@
 <template>
   <div class="notes-container">
     <div class="notes-header">
-      <h3 class="notes-title">Ваши заметки</h3>
-      <button class="add-note-btn" @click="openAddNoteModal">Новая заметка +</button>
+      <TitleWithButton text="Ваши заметки" button-text="Новая заметка +" @button-click="openAddNoteModal" />
     </div>
 
     <AddNoteModal v-if="isModalOpen" @close="closeModal" @add="handleAddPost" />
@@ -10,13 +9,7 @@
     <div v-if="loading" class="status-message">Загрузка заметок...</div>
     <div v-else-if="filteredPosts.length === 0" class="status-message">У вас пока нет заметок.</div>
     <div v-else class="note-cards">
-     <Card
-        v-for="post in filteredPosts"
-        :key="post.id"
-        :post="post"
-        @delete="deletePost"
-        @update="updatePost"
-      />
+      <Card v-for="post in filteredPosts" :key="post.id" :post="post" @delete="deletePost" @update="updatePost" />
     </div>
   </div>
 </template>
@@ -26,6 +19,7 @@ import { ref, onMounted, computed } from 'vue'
 import api from '@/api'
 import { getAuthToken } from '@/auth'
 import Card from '../components/Card.vue'
+import TitleWithButton from '@/blocks/window-desc/pb.vue'
 import AddNoteModal from '../components/AddNoteModal.vue'
 
 const posts = ref([])
@@ -100,6 +94,7 @@ const updatePost = (updatedPost) => {
 const openAddNoteModal = () => {
   isModalOpen.value = true
 }
+
 const closeModal = () => {
   isModalOpen.value = false
 }
@@ -128,35 +123,17 @@ const handleAddPost = async (newPost) => {
   padding: 2rem;
   color: white;
 }
+
 .notes-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 1.5rem;
 }
-.notes-title {
-  font-size: 1.8rem;
-  color: #ffffff;
-  margin: 0;
-}
-.add-note-btn {
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  color: #fff;
-  background-color: #007bff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.add-note-btn:hover {
-  background-color: #0056b3;
-}
+
 .note-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
 }
+
 .status-message {
   text-align: center;
   color: #ccc;

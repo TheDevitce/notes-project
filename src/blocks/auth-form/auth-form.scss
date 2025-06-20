@@ -5,7 +5,7 @@
   background: #181819;
 
   &__container {
-    background: rgba(255, 255, 255, 0.1); 
+    background: rgba(255, 255, 255, 0.1);
     padding: 2rem;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -38,7 +38,8 @@
   &__input {
     width: 100%;
     border-radius: 7px;
-    height: 70px;
+    height: 80px;
+
   }
 
   &__button {
@@ -69,5 +70,4 @@
     margin-bottom: 1rem;
     text-align: center;
   }
-
 }

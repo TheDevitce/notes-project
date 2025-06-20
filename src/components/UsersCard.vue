@@ -25,34 +25,24 @@
     </div>
 
     <div class="actions">
-      <button class="action-btn edit" title="Редактировать" @click="$emit('update', user)">
-               <SvgIcon name="edit" color="#000" size="30" />
-
-      </button>
-      <button class="action-btn delete" title="Удалить" @click="showDeleteModal = true">
-               <SvgIcon name="delete" color="#000" size="30" />
-
-      </button>
+      <tbutton class="action-btn edit" title="Редактировать" @click="$emit('update', user)" type="edit">
+      </tbutton>
+      <tbutton class="action-btn delete" title="Удалить" @click="showDeleteModal = true" type="delete">
+      </tbutton>
     </div>
 
-    <DeleteConfirmModal
-  v-if="showDeleteModal"
-  :showModal="showDeleteModal"
-  itemType="пользователя"
-  :itemName="fullName"
-  @close="showDeleteModal = false"
-  @confirm="
-    $emit('update:user', { ...user, active: false });
-    showDeleteModal = false;
-  "
-/>
+    <DeleteConfirmModal v-if="showDeleteModal" :showModal="showDeleteModal" itemType="пользователя" :itemName="fullName"
+      @close="showDeleteModal = false" @confirm="
+        $emit('update:user', { ...user, active: false });
+      showDeleteModal = false;
+      " />
   </div>
 </template>
 
 <script setup>
 import { computed, ref } from 'vue'
 import DeleteConfirmModal from '../components/DeleteConfirmModal.vue'
-import SvgIcon from '@/components/SvgIcon.vue'
+import tbutton from '@blocks/button/tbutton.vue'
 
 const props = defineProps({
   user: {
@@ -85,6 +75,7 @@ const fullName = computed(() => {
 
 const showDeleteModal = ref(false)
 </script>
+
 <style scoped>
 .user-card {
   display: flex;
@@ -115,14 +106,16 @@ const showDeleteModal = ref(false)
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex: 1;
 }
 
 .avatar {
   width: 40px;
   height: 40px;
-  background-color: #3498db;
-  color: white;
+  background-color: white;
+  color: #3498db;
   font-size: 1.2rem;
+  font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -139,25 +132,40 @@ const showDeleteModal = ref(false)
 }
 
 .note-count {
-  margin-left: 230px;
+  position: absolute;
+  left: 300px;
   font-size: 0.9rem;
   color: #ffffffcc;
 }
 
 .statuses {
-  margin-left: -20px;
   display: flex;
   gap: 1rem;
-  position: relative;
+  margin-left: 2rem;
 }
 
-.status-dropdown,
+.status-label {
+  padding: 0.3rem 0.8rem;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.status-label.active {
+  background-color: rgba(0, 123, 255, 0.1);
+  color: #007bff;
+}
+
+.status-label.inactive {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+}
+
 .role-dropdown {
-  margin-left: 120px;
   position: relative;
 }
 
-.status-dropdown select,
 .role-dropdown select {
   appearance: none;
   background-color: #ffffff;
@@ -169,15 +177,6 @@ const showDeleteModal = ref(false)
   transition: all 0.3s ease;
   min-width: 120px;
   font-weight: bold;
-  color: transparent;
-}
-
-.status-dropdown select.status-active {
-  color: #007bff;
-}
-
-.status-dropdown select.status-inactive {
-  color: #e74c3c;
 }
 
 .role-dropdown select.role-admin {
@@ -188,7 +187,6 @@ const showDeleteModal = ref(false)
   color: #2ecc71;
 }
 
-.status-dropdown::after,
 .role-dropdown::after {
   content: '▾';
   position: absolute;
@@ -203,6 +201,7 @@ const showDeleteModal = ref(false)
 .actions {
   display: flex;
   gap: 0.5rem;
+  margin-left: 1rem;
 }
 
 .action-btn {
@@ -212,11 +211,6 @@ const showDeleteModal = ref(false)
   padding: 0.5rem;
   border-radius: 4px;
   transition: background-color 0.3s ease;
-}
-
-.action-btn img {
-  width: 35px;
-  height: 35px;
 }
 
 .delete:hover {
@@ -232,5 +226,6 @@ const showDeleteModal = ref(false)
   flex-direction: column;
   justify-content: center;
   min-width: 0;
+  position: relative;
 }
 </style>

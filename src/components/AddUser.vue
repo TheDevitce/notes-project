@@ -2,7 +2,7 @@
   <div v-if="visible" class="modal-overlay">
     <div class="modal">
       <div class="header">
-               <SvgIcon name="logo" color="#000" size="30" />
+        <SvgIcon name="logo" color="#000" size="30" />
         <h3>Добавление пользователя</h3>
       </div>
 

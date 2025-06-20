@@ -4,7 +4,7 @@
 
     <nav v-if="user && user.role === 'admin'" class="nav-wrapper">
       <ul class="navul">
-        <li >Заметки пользователей</li>
+        <li>Заметки пользователей</li>
         <li @click="navigateTo('/Users')">Пользователи</li>
       </ul>
     </nav>
@@ -17,7 +17,7 @@
       </div>
 
       <button v-if="user" class="logout-btn" title="Выйти" @click="handleLogout">
-               <SvgIcon name="logout" color="#000" size="30" />
+        <SvgIcon name="logout" color="#000" size="30" />
       </button>
     </div>
   </div>
@@ -28,8 +28,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import SvgIcon from '@/components/SvgIcon.vue'
-
+import SvgIcon from '@/components/SvgComponents/SvgLogOut.vue'
 
 const router = useRouter()
 const user = ref(null)

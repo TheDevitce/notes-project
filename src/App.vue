@@ -1,18 +1,15 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import Header from './components/Header.vue'
+import { useRouter } from 'vue-router'
 
-const route = useRoute()
 const router = useRouter()
-
 const isAuthenticated = ref(false)
 
 const checkAuth = () => {
   const auth = localStorage.getItem('auth')
   try {
     const parsedAuth = auth ? JSON.parse(auth) : null
-    isAuthenticated.value = !!(parsedAuth && parsedAuth.username && parsedAuth.active !== false)
+    isAuthenticated.value = !!(parsedAuth && parsedAuth.token)
   } catch (e) {
     isAuthenticated.value = false
   }
@@ -29,13 +26,7 @@ router.afterEach(() => {
 
 <template>
   <div>
-    <header v-if="isAuthenticated">
-      <Header />
-    </header>
-
-    <main>
-      <router-view />
-    </main>
+    <router-view />
   </div>
 </template>
 

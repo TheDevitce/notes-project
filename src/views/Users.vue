@@ -1,8 +1,8 @@
 <template>
   <div class="users-container">
     <div class="users-header">
-      <h3 class="users-title">Список пользователей</h3>
-      <button class="add-user-btn" @click="openAddUserModal">Новый пользователь +</button>
+      <TitleWithButton text="Список пользователей" button-text="Зарегистрировать пользователя +"
+        @button-click="openAddUserModal" />
     </div>
 
     <div class="user-table-header">
@@ -24,13 +24,8 @@
     </div>
 
     <div v-else class="user-table">
-      <UsersCard
-  v-for="(user, index) in filteredUsers"
-  :key="user.id"
-  :user="user"
-  :is-last="index === filteredUsers.length - 1"
-  @update:user="updateUser"
-/>
+      <UsersCard v-for="(user, index) in filteredUsers" :key="user.id" :user="user"
+        :is-last="index === filteredUsers.length - 1" @update:user="updateUser" />
     </div>
   </div>
 </template>
@@ -38,10 +33,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import UsersCard from '../components/UsersCard.vue'
+import TitleWithButton from '@/blocks/window-desc/pb.vue'
 import AddUser from '../components/AddUser.vue'
 import { getAuthToken } from '@/auth'
-import api from '../api' 
-
+import api from '../api'
 
 const users = ref([])
 const filteredUsers = ref([])
@@ -49,11 +44,10 @@ const loading = ref(true)
 const error = ref(null)
 const isModalOpen = ref(false)
 
-
 const fetchUsers = async () => {
   try {
     const response = await api.get('/users')
-    
+
     users.value = response.data.users.map(user => ({
       ...user,
       active: user.active ?? true,
@@ -68,11 +62,13 @@ const fetchUsers = async () => {
     loading.value = false
   }
 }
+
 onMounted(fetchUsers)
 
 const openAddUserModal = () => {
   isModalOpen.value = true
 }
+
 const closeModal = () => {
   isModalOpen.value = false
 }
@@ -113,31 +109,7 @@ const updateUser = (updatedUser) => {
 }
 
 .users-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 1.5rem;
-}
-
-.users-title {
-  font-size: 1.8rem;
-  color: #ffffff;
-  margin: 0;
-}
-
-.add-user-btn {
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  color: #fff;
-  background-color: #1d4add;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.add-user-btn:hover {
-  background-color: #218838;
 }
 
 .user-table {
@@ -163,35 +135,6 @@ const updateUser = (updatedUser) => {
   border-top-right-radius: 6px;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-}
-
-.header-checkbox {
-  width: 24px;
-  height: 24px;
-  appearance: none;
-  background-color: #fff;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-.header-checkbox:checked {
-  background-color: #1d4add;
-  border-color: #1d4add;
-}
-
-.header-checkbox:checked::after {
-  content: '';
-  display: block;
-  width: 100%;
-  height: 100%;
-  background-image: url("/src/assets/_Checkbox base.png");
-  background-size: cover;
-  opacity: 1;
 }
 
 .header-cell {
