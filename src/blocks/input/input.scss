@@ -1,18 +1,24 @@
-.input {  
+.input{  
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+
   &__label {
     display: block;
     color: #fff;
     font-size: 1rem;
+   
   }
 
   &__field {
     display: block;
+    padding: 10px 14px;
     font-size: 1rem;
     border: 1px solid #ccc;
-    border-radius: 6px;
+    border-radius: 8px;
     background-color: #fff;
     color: #000;
-    outline: none;
+    outline: none; 
     transition: border-color 0.3s ease;
 
     &:focus {

@@ -2,8 +2,8 @@
   <button
     :class="buttonClass"
     :disabled="disabled"
-    v-bind="$attrs"
   >
+  <!-- проверка на loading -->
     <slot></slot>
   </button>
 </template>
@@ -16,12 +16,17 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  // loading
+  // btnType - default
 })
 
-const buttonClass = computed(() => ({
-  button: true,
-  'button_disabled': props.disabled
-}))
+const buttonClass = computed(() => ([
+  "button",
+  {
+  'button_disabled': props.disabled,
+  // "button_pri": props.btnType === ""
+}
+]))
 </script>
 
 <style scoped src="./button.scss"></style>

@@ -1,4 +1,8 @@
 .button {
+  // css-переменнные
+  // background-color
+  // color
+
   font-family: inherit;
   color: #fff;
   background-color: #007bff;
@@ -14,5 +18,9 @@
   &_disabled {
     background-color: #ccc;
     cursor: not-allowed;
+  }
+
+  &_primary {
+    // 
   }
 }

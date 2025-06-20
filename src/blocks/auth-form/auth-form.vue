@@ -2,8 +2,9 @@
   <div class="auth-form">
     <div class="auth-form__container">
       <div class="auth-form__logo">
-        <SvgIcon name="logo" color="#000" size="30" />
+        <SvgLogo name="logo" color="#000" size="30" />
       </div>
+      <!-- на элемент -->
       <h2 class="auth-form__title">Добро пожаловать</h2>
       <p class="auth-form__subtitle">Введите ваш логин и пароль</p>
 
@@ -11,7 +12,6 @@
         <InputComponent id="username" label="Логин"  v-model="form.username" placeholder="yourLogin"  required class="auth-form__input" />
         <InputComponent id="password" label="Пароль"  type="password" v-model="form.password" placeholder="********" required class="auth-form__input" />
 
-        <div v-if="error" class="auth-form__error">{{ error }}</div>
 
         <ButtonComponent class="auth-form__button" :disabled="loading">
           {{ loading ? 'Загрузка...' : 'Войти' }}
@@ -27,6 +27,7 @@ import { useRouter } from 'vue-router'
 import api from '@/api'
 import ButtonComponent from '@/blocks/button/button.vue'
 import InputComponent from '@/blocks/input/input.vue'
+import SvgLogo from '@/components/SvgComponents/SvgLogo.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 
 const router = useRouter()
@@ -80,9 +81,4 @@ const handleLogin = async () => {
 }
 </script>
 
-<style src="./auth-form.scss">
-:deep(.input__field) {
-  padding-left: 1.5rem !important;
-  padding-right: 1.5rem !important;
-}
-</style>
+<style src="./auth-form.scss"></style>

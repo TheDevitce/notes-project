@@ -1,20 +1,29 @@
 <template>
-  <div class="input-group">
-    <label :for="id" class="input__label">{{ label }}</label>
+  <div class="input">
+    <label  :for="id" class="input__label">{{ label }}</label>
+<!-- v-if -->
     <input
       :id="id"
       :type="type"
-      v-model="model"
+      v-model="perem"
       :placeholder="placeholder"
       :required="required"
       class="input__field"
-      v-bind="$attrs"
     />
   </div>
 </template>
 
 <script setup>
+import {ref, watch} from 'vue'
+
+
 const model = defineModel()
+const perem = ref('');
+
+watch(perem, (newX) => {
+ 
+})
+
 
 defineProps({
   id: {
@@ -23,7 +32,7 @@ defineProps({
   },
   label: {
     type: String,
-    required: true,
+    required: false,
   },
   type: {
     type: String,
