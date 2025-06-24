@@ -1,20 +1,20 @@
-module.exports = {
+export default {
   root: true,
   env: {
     browser: true,
-    es2021: true
+    es2021: true,
   },
   extends: [
     'eslint:recommended',
     'plugin:vue/vue3-recommended',
-    'prettier'
+    'prettier',
   ],
   parserOptions: {
     ecmaVersion: 'latest',
-    sourceType: 'module'
+    sourceType: 'module',
   },
   plugins: {
-    vue: require('eslint-plugin-vue'),
+    vue: 'eslint-plugin-vue',
   },
   rules: {
     'no-console': ['warn'],
@@ -23,6 +23,6 @@ module.exports = {
     'vue/require-default-prop': 'off',
     'vue/no-unused-components': 'warn',
     'vue/html-indent': 'off',
-    'vue/max-attributes-per-line': 'off'
-  }
-}
+    'vue/max-attributes-per-line': 'off',
+  },
+};

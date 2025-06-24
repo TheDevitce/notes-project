@@ -1,17 +1,23 @@
 <template>
   <div class="note-card">
-    <NoteTitle :title="post.title" />
+    <header class="note-card__header">
+      <NoteTitle :title="post.title" />
+    </header>
 
-    <NoteContent :content="post.body" :is-editing="isEditing" @edit-start="startEditing" @edit-save="saveEdit" />
+    <main class="note-card__content">
+      <NoteContent :content="post.body" :is-editing="isEditing" @edit-start="startEditing" @edit-save="saveEdit" />
+    </main>
 
-    <div class="note-card__actions">
-      <ActionButton variant="danger" @click="showDeleteModal = true">
-        Удалить
-      </ActionButton>
-      <ActionButton @click="startEditing">
-        Изменить
-      </ActionButton>
-    </div>
+    <footer class="note-card__footer">
+      <div class="note-card__actions">
+        <ActionButton variant="danger" @click="showDeleteModal = true">
+          Удалить
+        </ActionButton>
+        <ActionButton @click="toggleEdit">
+          {{ isEditing ? 'Сохранить' : 'Изменить' }}
+        </ActionButton>
+      </div>
+    </footer>
 
     <DeleteConfirmModal :show-modal="showDeleteModal" item-type="заметку" :item-name="post.title"
       @close="showDeleteModal = false" @confirm="$emit('delete', post.id)" />
@@ -45,6 +51,14 @@ const saveEdit = (newContent) => {
   isEditing.value = false
   emit('update', { ...props.post, body: newContent })
 }
+
+const toggleEdit = () => {
+  if (isEditing.value) {
+    saveEdit(localContent.value)
+  } else {
+    startEditing()
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -59,14 +73,21 @@ const saveEdit = (newContent) => {
   min-height: 350px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 1rem;
+}
+
+.note-card__content {
+  flex-grow: 1;
+}
+
+.note-card__footer {
+  margin-top: auto;
 }
 
 .note-card__actions {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: auto;
 }
 </style>

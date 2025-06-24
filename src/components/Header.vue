@@ -10,11 +10,7 @@
     </nav>
 
     <div class="user-actions">
-      <div v-if="user" class="user-info">
-        <h2 class="name">{{ user.fio }} {{ user.firstName }}</h2>
-        <h4 class="name">{{ user.fio }} {{ user.lastName }}</h4>
-        <span class="mail">{{ user.password }}</span>
-      </div>
+      <UserAvatarWithName v-if="user" :first-name="user.firstName" :last-name="user.lastName" :email="user.email" />
 
       <button v-if="user" class="logout-btn" title="Выйти" @click="handleLogout">
         <SvgIcon name="logout" color="#000" size="30" />
@@ -28,6 +24,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import UserAvatarWithName from '@/blocks/other/UserAvatarWithName.vue'
 import SvgIcon from '@/components/SvgComponents/SvgLogOut.vue'
 
 const router = useRouter()

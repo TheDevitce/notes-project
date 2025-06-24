@@ -141,7 +141,6 @@ const showDeleteModal = ref(false)
 .statuses {
   display: flex;
   gap: 1rem;
-  margin-left: 2rem;
 }
 
 .status-label {
@@ -164,6 +163,9 @@ const showDeleteModal = ref(false)
 
 .role-dropdown {
   position: relative;
+  margin-right: 150px;
+  margin-left: 180px;
+
 }
 
 .role-dropdown select {

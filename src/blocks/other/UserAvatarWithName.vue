@@ -5,7 +5,7 @@
         </div>
         <div class="user-avatar-with-name__details">
             <h4 class="user-avatar-with-name__name">{{ fullName }}</h4>
-            <p class="user-avatar-with-name__note-count">{{ noteCount }} заметок</p>
+            <p class="user-avatar-with-name__email">{{ email }}</p>
         </div>
     </div>
 </template>
@@ -22,9 +22,9 @@ const props = defineProps({
         type: String,
         default: ''
     },
-    noteCount: {
-        type: Number,
-        default: 0
+    email: {
+        type: String,
+        default: ''
     }
 })
 
@@ -72,7 +72,7 @@ const fullName = computed(() => {
         max-width: 200px;
     }
 
-    &__note-count {
+    &__email {
         font-size: 0.9rem;
         color: #ffffffcc;
     }

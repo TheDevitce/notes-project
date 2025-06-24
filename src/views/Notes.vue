@@ -140,4 +140,8 @@ const handleAddPost = async (newPost) => {
   font-size: 20px;
   margin-top: 5rem;
 }
+
+:deep(.title-with-button) {
+  gap: 200px !important;
+}
 </style>

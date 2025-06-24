@@ -1,23 +1,29 @@
 <template>
-  <div v-if="showModal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-header">
-        <SvgIcon name="logo" color="#000" size="30" />
-      </div>
-      <div class="modal-content">
-        <p>Вы уверены, что хотите удалить {{ itemType }} "<strong>{{ itemName }}</strong>"?</p>
-      </div>
+  <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
+    <CardBase class="modal-confirm">
+      <header class="modal-confirm__header">
+        <SvgLogo />
+        <Title class="modal-confirm__title" :title="`Вы уверены, что хотите удалить ${itemType}?`" />
+      </header>
 
-      <div class="modal-actions">
-        <button class="btn cancel" @click="closeModal">Отмена</button>
-        <button class="btn delete" @click="confirmDelete">Удалить</button>
+      <div class="modal-confirm__actions">
+        <Button btn-type="dark" class="modal-confirm__cancel" @click="closeModal">
+          Отмена
+        </Button>
+        <Button btn-type="secondary" class="modal-confirm__delete" @click="confirmDelete">
+          Удалить
+        </Button>
       </div>
-    </div>
+    </CardBase>
   </div>
 </template>
 
 <script setup>
 import { defineProps, defineEmits } from 'vue'
+import CardBase from '@/blocks/modal/modal.vue'
+import Title from '@/blocks/text-elements/title.vue'
+import Button from '@/blocks/button/button.vue'
+import SvgLogo from '@/components/SvgComponents/SvgLogo.vue'
 
 const props = defineProps({
   showModal: {
@@ -27,11 +33,11 @@ const props = defineProps({
   itemType: {
     type: String,
     required: true,
-    validator: value => ['заметку', 'пользователя'].includes(value)
+    validator: value => ['пользователя', 'заметку'].includes(value)
   },
   itemName: {
     type: String,
-    required: true
+    default: ''
   }
 })
 
@@ -46,7 +52,7 @@ const confirmDelete = () => {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -60,62 +66,44 @@ const confirmDelete = () => {
   z-index: 9999;
 }
 
-.modal {
-  background-color: #1a1a1a;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.modal-confirm {
+  width: 480px; 
+  padding: 32px;
   text-align: center;
-  color: white;
-  max-width: 400px;
-  width: 100%;
-}
 
-.modal-header {
-  margin-bottom: 1.5rem;
-}
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+  }
 
-.logo {
-  width: 60px;
-  height: 60px;
-  filter: invert(1);
-}
+  &__title {
+    margin-top: 16px;
+    font-size: 1.2rem;
+  }
 
-.modal-content {
-  font-size: 1.2rem;
-  line-height: 1.5;
-  margin-bottom: 2rem;
-}
+  &__content {
+    width: 360px; 
+    margin: 0 auto 32px auto;
+  }
 
-.modal-actions {
-  display: flex;
-  justify-content: space-between;
-}
+  &__item-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-top: 8px;
+  }
 
-.btn {
-  padding: 0.8rem 1.5rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
+  &__actions {
+    width: 360px; 
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+  }
 
-.cancel {
-  background-color: #333;
-  color: white;
-}
-
-.delete {
-  background-color: #e74c3c;
-  color: white;
-}
-
-.delete:hover {
-  background-color: #c0392b;
-}
-
-.cancel:hover {
-  background-color: #555;
+  &__cancel,
+  &__delete {
+    width: 174px; 
+  }
 }
 </style>

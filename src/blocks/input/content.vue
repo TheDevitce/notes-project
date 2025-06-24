@@ -3,8 +3,14 @@
     <p v-if="!isEditing" class="note-content__text" @click="$emit('edit-start')">
       {{ content }}
     </p>
-    <textarea v-else ref="textareaRef" v-model="localContent" class="note-content__textarea"
-      @blur="$emit('edit-save', localContent)" @keyup.enter="$emit('edit-save', localContent)" />
+    <textarea
+      v-else
+      ref="textareaRef"
+      v-model="localContent"
+      class="note-content__textarea"
+      @blur="handleSave"
+      @keydown.enter.prevent="handleSave"
+    />
   </div>
 </template>
 
@@ -27,13 +33,20 @@ const emit = defineEmits(['edit-start', 'edit-save'])
 const textareaRef = ref(null)
 const localContent = ref(props.content)
 
-watch(() => props.isEditing, async (newVal) => {
-  if (newVal) {
-    localContent.value = props.content
-    await nextTick()
-    textareaRef.value.focus()
+watch(
+  () => props.isEditing,
+  async (newVal) => {
+    if (newVal) {
+      localContent.value = props.content
+      await nextTick()
+      textareaRef.value.focus()
+    }
   }
-})
+)
+
+const handleSave = () => {
+  emit('edit-save', localContent.value)
+}
 </script>
 
 <style lang="scss" scoped>

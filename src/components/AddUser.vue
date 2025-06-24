@@ -1,39 +1,46 @@
 <template>
-  <div v-if="visible" class="modal-overlay">
-    <div class="modal">
-      <div class="header">
-        <SvgIcon name="logo" color="#000" size="30" />
-        <h3>Добавление пользователя</h3>
-      </div>
+  <div v-if="visible" class="modal-overlay" @click.self="closeModal">
+    <CardBase class="modal-add-user">
+      <header class="modal-add-user__header">
+        <SvgLogo />
+        <Title class="modal-add-user__title" title="Добавление пользователя" />
+      </header>
 
-      <div class="form-container">
-        <form @submit.prevent="handleSubmit">
-          <label for="fullName">ФИО</label>
-          <input type="text" id="fullName" v-model="fullName" placeholder="Введите ФИО" required />
+      <form class="modal-add-user__form" @submit.prevent="handleSubmit">
+        <div class="modal-add-user__content">
+          <div class="modal-add-user__inputs">
+            <Input id="fullName" label="Имя Фамилия" v-model="fullName" placeholder="Введите ФИО" required />
 
-          <label for="login">Логин</label>
-          <input id="login" v-model="login" placeholder="Введите логин" required />
+            <Input id="login" label="Логин" v-model="login" placeholder="Введите логин" required />
 
-          <label for="password">Пароль</label>
-          <input type="password" id="password" v-model="password" placeholder="Введите пароль" required />
+            <Input id="password" label="Пароль" type="password" v-model="password" placeholder="Введите пароль"
+              required />
 
-          <label for="repeatPassword">Повторите пароль</label>
-          <input type="password" id="repeatPassword" v-model="repeatPassword" placeholder="Повторите пароль" required />
-
-          <div class="buttons">
-            <button type="button" @click="closeModal">Отмена</button>
-            <button type="submit" class="primary">Добавить</button>
+            <Input id="repeatPassword" label="Повторите пароль" type="password" v-model="repeatPassword"
+              placeholder="Повторите пароль" required />
           </div>
-        </form>
-      </div>
-    </div>
+
+          <div class="modal-add-user__actions">
+            <Button btn-type="dark" @click="closeModal">
+              Отмена
+            </Button>
+            <Button btn-type="primary" type="submit">
+              Добавить
+            </Button>
+          </div>
+        </div>
+      </form>
+    </CardBase>
   </div>
 </template>
 
-
 <script setup>
 import { ref } from 'vue'
-import { getAuthToken } from '@/auth'
+import CardBase from '@/blocks/modal/modal.vue'
+import Title from '@/blocks/text-elements/title.vue'
+import Input from '@/blocks/input/input.vue'
+import Button from '@/blocks/button/button.vue'
+import SvgLogo from '@/components/SvgComponents/SvgLogo.vue'
 
 const props = defineProps({
   visible: {
@@ -80,7 +87,7 @@ const closeModal = () => {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -94,83 +101,58 @@ const closeModal = () => {
   z-index: 999;
 }
 
-.modal {
-  background-color: #2a2a2a;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  width: 350px;
-  color: white;
-}
-
-.header {
+.modal-add-user {
+  width: 408px;
+  min-height: 568px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 2rem;
-}
 
-.image {
-  width: 50px;
-  height: 50px;
-  margin-bottom: 0.5rem;
-}
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+    width: 100%;
+  }
 
-h3 {
-  margin: 0;
-  font-size: 1.5rem;
-  text-align: center;
-}
+  &__title {
+    margin-top: 16px;
+  }
 
-.form-container {
-  width: 100%;
-}
+  &__form {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
 
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  text-align: left;
-}
+  &__content {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 
-input {
-  width: 100%;
-  padding: 0.8rem;
-  margin-bottom: 1.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.95rem;
-  box-sizing: border-box;
-}
+  &__inputs {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
 
-.buttons {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  width: 100%;
-}
+  &__actions {
+    width: 100%;
+    margin-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
 
-button {
-  padding: 0.8rem 1.5rem;
-  width: 200px;
-  font-size: 0.95rem;
-  border: none;
-  border-radius: 7px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button[type="button"] {
-  background-color: #181819;
-  color: white;
-}
-
-button.primary {
-  background-color: #007bff;
-  color: white;
-}
-
-button.primary:hover {
-  background-color: #0056b3;
+  .button {
+    flex: 1; 
+  }
 }
 </style>
