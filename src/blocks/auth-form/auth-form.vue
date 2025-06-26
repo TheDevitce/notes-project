@@ -54,8 +54,10 @@ import AuthTitle from '@/blocks/text-elements/auth-title.vue'
 import ButtonComponent from '@/blocks/button/button.vue'
 import InputComponent from '@/blocks/input/input.vue'
 import SvgLogo from '@/components/SvgComponents/SvgLogo.vue'
+import { useAuthStore } from '@/stores/userData'
 
 const router = useRouter()
+const authStore = useAuthStore()
 
 const form = ref({
   username: '',
@@ -93,7 +95,7 @@ const handleLogin = async () => {
       role: determineRole(userResponse.data)
     }
 
-    localStorage.setItem('auth', JSON.stringify(userData))
+    authStore.setUserData(userData)
 
     router.push(userData.role === 'admin' ? '/Users' : '/Notes')
 
@@ -114,7 +116,7 @@ const handleLogin = async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* Добавлено для вертикального центрирования */
+  justify-content: center;
 
   &__content {
     width: 100%;

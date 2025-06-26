@@ -10,7 +10,11 @@
     </nav>
 
     <div class="user-actions">
-      <UserAvatarWithName v-if="user" :first-name="user.firstName" :last-name="user.lastName" :email="user.email" />
+      <UserAvatarWithName v-if="user" 
+        :first-name="user.firstName" 
+        :last-name="user.lastName" 
+        :email="user.email" 
+      />
 
       <button v-if="user" class="logout-btn" title="Выйти" @click="handleLogout">
         <SvgIcon name="logout" color="#000" size="30" />
@@ -22,20 +26,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import UserAvatarWithName from '@/blocks/other/UserAvatarWithName.vue'
 import SvgIcon from '@/components/SvgComponents/SvgLogOut.vue'
+import { useAuthStore } from '@/stores/userData'
 
 const router = useRouter()
-const user = ref(null)
+const authStore = useAuthStore()
 
-onMounted(() => {
-  const authData = localStorage.getItem('auth')
-  if (authData) {
-    user.value = JSON.parse(authData)
-  }
-})
+const user = computed(() => authStore.user)
 
 const navigateTo = (path) => {
   router.push(path)
@@ -44,12 +43,12 @@ const navigateTo = (path) => {
 const handleLogout = () => {
   const isConfirmed = confirm('Вы действительно хотите выйти?')
   if (isConfirmed) {
-    localStorage.removeItem('auth')
-    user.value = null
+    authStore.clearUser()
     router.push('/')
   }
 }
 </script>
+
 
 <style scoped>
 .header {

@@ -1,10 +1,12 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import AuthLayout from '@/layouts/AuthLayout.vue'
-import MainLayout from '@/layouts/MainLayout.vue' // Добавлен главный лейаут
+import MainLayout from '@/layouts/MainLayout.vue'
 import Notes from '../views/Notes.vue'
 import AllNotes from '../views/AllNotes.vue'
 import Users from '../views/Users.vue'
-import { isAuthenticated, hasRole, getAuthUser } from '../auth' 
+
+import { isAuthenticated, hasRole } from '../auth'
+import { useAuthStore } from '@/stores/userData'
 
 const routes = [
   {
@@ -44,17 +46,17 @@ router.beforeEach((to, from, next) => {
     if (!isAuthenticated()) {
       return next('/')
     }
-    
+
     if (to.meta.roles) {
-      const user = getAuthUser()
-      const hasRequiredRole = to.meta.roles.some(role => hasRole(role))
-      if (!hasRequiredRole) {
-        return next(user.role === 'admin' ? '/AllNotes' : '/Notes')
+      const userRole = useAuthStore().user?.role
+      const allowedRoles = to.meta.roles
+
+      const isAllowed = allowedRoles.some(role => hasRole(role))
+      if (!isAllowed) {
+        return next(userRole === 'admin' ? '/Users' : '/Notes')
       }
     }
   }
-  
-  next()
-})
 
+})
 export default router
